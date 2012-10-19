@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Task 01: Edge Detection</title>
+  <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+  <link href='http://fonts.googleapis.com/css?family=Quando' rel='stylesheet' type='text/css'></link>
+</head>
+<body>
+  <h1>Task 01: Edge Detection</h1>
+  <div class="commands">
+    <label for="file-select">Select File:</label>
+    <select id="file-select">
+      <option>train.png</option>
+      <option>jet.png</option>
+    </select>
+  </div>
+  <div class="source">
+    <h3>Source</h3>
+    <img id="source-image" src="images/train.png" />
+  </div>
+  <div class="output clearfix">
+    <h3>Output</h3>
+    <canvas id="output-canvas"></canvas>
+  </div>
+
+  <script type="text/javascript" src="../javascripts/utilities.js"></script>
+  <script type="text/javascript" src="edge_detection.js"></script>
+</body>
+</html>
