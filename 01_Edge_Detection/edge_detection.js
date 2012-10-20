@@ -19,7 +19,7 @@ var testing = function(){
 document.getElementById('file-select').addEventListener('change', function(){
   currentImage = new ManipulatableImage(_sourceImage, _ouputCanvas);
   currentImage.load('images/' + this.value, function(){
-    currentImage.drawToCanvas();
+    testing();
   });
 });
 
