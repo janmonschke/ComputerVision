@@ -82,10 +82,13 @@ ManipulatableImage.prototype.drawImageToCanvas = function() {
 // Flushes the manipulated data to the canvas
 ManipulatableImage.prototype.flushToCanvas = function(){
   var flush = this.outputContext.createImageData(this.outputCanvas.width, this.outputCanvas.height);
+  var current;
   for(var i = 0; i < this.manipulatedImageData.length; i++){
-    flush.data[4*i] = this.manipulatedImageData[i];
-    flush.data[4*i+1] = this.manipulatedImageData[i];
-    flush.data[4*i+2] = this.manipulatedImageData[i];
+    current = this.manipulatedImageData[i] + 128;
+    current = (current > 255) ? 255 : current;
+    flush.data[4*i] = current;
+    flush.data[4*i+1] = current;
+    flush.data[4*i+2] = current;
     flush.data[4*i+3] = 255;
   }
   this.outputContext.putImageData(flush, 0, 0);

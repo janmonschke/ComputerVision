@@ -1,14 +1,21 @@
-var currentAction = '';
+var currentFilter = 'xGradient';
 var _sourceImage = document.getElementById('source-image');
 var _ouputCanvas = document.getElementById('output-canvas');
 var currentImage = new ManipulatableImage(_sourceImage, _ouputCanvas);
+
+var filters = {
+  xGradient: [[0, 0, 0], [0.5, 0 , -0.5], [0, 0, 0]],
+  yGradient: [[0, 0.5, 0], [0, 0, 0], [0, -0.5, 0]],
+  laplaceSharpening: [[0, 1, 0], [1, -4, 1], [0, 1, 0]],
+  sobelX: [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]
+};
 
 var testing = function(){
   currentImage.drawImageToCanvas();
   var start = new Date().getTime();
   currentImage.grayScale();
   var pointA = new Date().getTime();
-  currentImage.convolute([[0, -0.5, 0], [0, 0, 0], [0, 0.5, 0]]);
+  currentImage.convolute(filters[currentFilter]);
   var pointB = new Date().getTime();
   currentImage.flushToCanvas();
   var end = new Date().getTime();
@@ -24,7 +31,7 @@ document.getElementById('file-select').addEventListener('change', function(){
 });
 
 document.getElementById('action-select').addEventListener('change', function(){
-  currentAction = this.value;
+  currentFilter = this.value;
   testing();
 });
 
