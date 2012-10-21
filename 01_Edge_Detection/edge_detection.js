@@ -25,7 +25,7 @@ var testing = function(){
     addition = 20;
   }else if(currentFilter === 'sobelGradientDirection'){
     currentImage.convolute([filters.sobelX, filters.sobelY], function(image, pos, sum){
-      image[pos] = 128 * (Math.atan(sum[0] / sum[1]));
+      image[pos] = 255 * (Math.atan2(sum[1], sum[0]));
     });
     addition = 0;
   }else{
