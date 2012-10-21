@@ -137,3 +137,19 @@ ManipulatableImage.prototype.flushHSBtoRGBToCanvas = function(addition){
   this.outputContext.putImageData(flush, 0, 0);
   return this;
 };
+
+ManipulatableImage.prototype.combinedFlush = function(addition){
+  if(!addition){ addition = 0; }
+  var flush = this.outputContext.createImageData(this.outputCanvas.width, this.outputCanvas.height);
+  var current, rgbFromCurrentHsb;
+  for(var i = 0; i < this.manipulatedImageData.length; i++){
+    current = this.manipulatedImageData[i];
+    rgbFromCurrentHsb = utilities.rgbFromHsb([current.angle, 100, current.absolute]);
+    flush.data[4*i] = rgbFromCurrentHsb[0];
+    flush.data[4*i+1] = rgbFromCurrentHsb[1];
+    flush.data[4*i+2] = rgbFromCurrentHsb[2];
+    flush.data[4*i+3] = 255;
+  }
+  this.outputContext.putImageData(flush, 0, 0);
+  return this;
+};

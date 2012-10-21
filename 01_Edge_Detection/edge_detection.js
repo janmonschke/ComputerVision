@@ -1,4 +1,4 @@
-var currentFilter = 'sobelGradientDirectionColor';
+var currentFilter = 'combined';
 var _sourceImage = document.getElementById('source-image');
 var _ouputCanvas = document.getElementById('output-canvas');
 var currentImage = new ManipulatableImage(_sourceImage, _ouputCanvas);
@@ -56,6 +56,22 @@ var testing = function(){
     });
     addition = 0;
     currentImage.flushHSBtoRGBToCanvas(addition);
+
+  }else if(currentFilter === 'combined'){
+    var absl = 0;
+    var angle = 0;
+    // apply sobelx and sobely on the image
+    currentImage.convolute([filters.sobelX, filters.sobelY], function(image, pos, sum){
+      // calculate the angle
+      angle = (Math.atan2(sum[1], sum[0]));
+      // save the angle in degree
+      angle = (angle + Math.PI) * 360 / (2 * Math.PI);
+      // save the absolute
+      absl = Math.sqrt(sum[0] * sum[0] + sum[1] * sum[1]);
+      image[pos] = { angle: angle, absolute: absl };
+    });
+    addition = 0;
+    currentImage.combinedFlush(addition);
 
   }else{
     currentImage.convolute([filters[currentFilter]], function(image, pos, sum){
