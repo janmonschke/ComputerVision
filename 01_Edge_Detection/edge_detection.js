@@ -1,4 +1,4 @@
-var currentFilter = 'sobelAbsoluteGradient';
+var currentFilter = 'sobelGradientDirection';
 var _sourceImage = document.getElementById('source-image');
 var _ouputCanvas = document.getElementById('output-canvas');
 var currentImage = new ManipulatableImage(_sourceImage, _ouputCanvas);
@@ -21,6 +21,11 @@ var testing = function(){
   if(currentFilter === 'sobelAbsoluteGradient'){
     currentImage.convolute([filters.sobelX, filters.sobelY], function(image, pos, sum){
       image[pos] = Math.sqrt(sum[0] * sum[0] + sum[1] * sum[1]);
+    });
+    addition = 20;
+  }else if(currentFilter === 'sobelGradientDirection'){
+    currentImage.convolute([filters.sobelX, filters.sobelY], function(image, pos, sum){
+      image[pos] = 128 * (Math.atan(sum[0] / sum[1]));
     });
     addition = 0;
   }else{
