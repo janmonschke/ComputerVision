@@ -1,4 +1,4 @@
-var currentFilter = 'xGradient';
+var currentFilter = 'sobelAbsoluteGradient';
 var _sourceImage = document.getElementById('source-image');
 var _ouputCanvas = document.getElementById('output-canvas');
 var currentImage = new ManipulatableImage(_sourceImage, _ouputCanvas);
@@ -13,17 +13,23 @@ var filters = {
 };
 
 var testing = function(){
+  var addition = 128;
   currentImage.drawImageToCanvas();
   var start = new Date().getTime();
   currentImage.grayScale();
   var pointA = new Date().getTime();
   if(currentFilter === 'sobelAbsoluteGradient'){
-
+    currentImage.convolute([filters.sobelX, filters.sobelY], function(image, pos, sum){
+      image[pos] = Math.sqrt(sum[0] * sum[0] + sum[1] * sum[1]);
+    });
+    addition = 0;
   }else{
-    currentImage.convolute(filters[currentFilter]);
+    currentImage.convolute([filters[currentFilter]], function(image, pos, sum){
+      image[pos] = sum[0];
+    });
   }
   var pointB = new Date().getTime();
-  currentImage.flushToCanvas();
+  currentImage.flushToCanvas(addition);
   var end = new Date().getTime();
   console.log('start to a:', pointA - start, 'a to b:', pointB - pointA, 'b to end:', end - pointB, 'total:', end - start);
 };

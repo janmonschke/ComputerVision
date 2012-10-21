@@ -6,7 +6,7 @@ var ManipulatableImage = function (sourceImage, outputCanvas){
   this.manipulatedImageData = [];
 };
 
-ManipulatableImage.prototype.convolute = function(convolution, eachCallback){
+ManipulatableImage.prototype.convolute_old = function(convolution, eachCallback){
   var length = this.manipulatedImageData.length;
   var width = this.sourceImage.width;
   var height = this.sourceImage.height;
@@ -25,6 +25,31 @@ ManipulatableImage.prototype.convolute = function(convolution, eachCallback){
     }
     newImage[i] = sum;
     if(eachCallback){ eachCallback(sum); }
+  }
+  this.manipulatedImageData = newImage;
+  return this;
+};
+
+ManipulatableImage.prototype.convolute = function(filters, callback){
+  var length = this.manipulatedImageData.length;
+  var width = this.sourceImage.width;
+  var height = this.sourceImage.height;
+  var newImage = [];
+  var sum, factor, y, x;
+
+  for (var i = 0; i < length; i++) {
+    y = Math.floor(i / width);
+    x = i - y * width;
+    sum = [0, 0];
+    for (var f = 0; f < filters.length; f++){
+      for (var convY = -1; convY < 2; convY++) {
+        for (var convX = -1; convX < 2; convX++) {
+          factor = filters[f][convY + 1][convX + 1];
+          sum[f] += factor * this.getStreamLineValue(x + convX, y + convY, width, height);
+        }
+      }
+    }
+    if(callback){ callback(newImage, i , sum); }
   }
   this.manipulatedImageData = newImage;
   return this;
@@ -80,11 +105,12 @@ ManipulatableImage.prototype.drawImageToCanvas = function() {
 };
 
 // Flushes the manipulated data to the canvas
-ManipulatableImage.prototype.flushToCanvas = function(){
+ManipulatableImage.prototype.flushToCanvas = function(addition){
+  if(!addition){ addition = 0; }
   var flush = this.outputContext.createImageData(this.outputCanvas.width, this.outputCanvas.height);
   var current;
   for(var i = 0; i < this.manipulatedImageData.length; i++){
-    current = this.manipulatedImageData[i] + 128;
+    current = this.manipulatedImageData[i] + addition;
     current = (current > 255) ? 255 : current;
     flush.data[4*i] = current;
     flush.data[4*i+1] = current;
