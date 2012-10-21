@@ -1,7 +1,8 @@
 var utilities = {
+
   rgbFromHsb: function(hsv) {
     var r, g, b;
-    h = hsv[0]/360; s = hsv[1]/100; v = hsv[2]/100;
+    var h = hsv[0]/360; var s = hsv[1]/100; var v = hsv[2]/100;
 
     var i = Math.floor(h * 6);
     var f = h * 6 - i;
