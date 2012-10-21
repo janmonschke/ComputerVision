@@ -1,24 +1,49 @@
 var currentFilter = 'combined';
 var _sourceImage = document.getElementById('source-image');
 var _ouputCanvas = document.getElementById('output-canvas');
+var time = document.getElementById('time');
 var currentImage = new ManipulatableImage(_sourceImage, _ouputCanvas);
 
 // all filters are already mirrored and normalised
 var filters = {
   xGradient: [[0, 0, 0], [0.5, 0 , -0.5], [0, 0, 0]],
   yGradient: [[0, 0.5, 0], [0, 0, 0], [0, -0.5, 0]],
-  laplaceSharpening: [[0, 1, 0], [1, -4, 1], [0, 1, 0]],
   sobelX: [[0.125, 0, -0.125], [0.25, 0, -0.25], [0.125, 0, -0.125]],
   sobelY: [[0.125, 0.25, 0.125], [0, 0, 0], [-0.125, -0.25, -0.125]]
 };
 
-var testing = function(){
+// excutes the actions
+var execute = function(){
   var addition = 128;
 
   currentImage.drawImageToCanvas();
   currentImage.grayScale();
 
-  if(currentFilter === 'sobelAbsoluteGradient'){
+  var start = new Date().getTime();
+
+  if(currentFilter === 'sobelXSeparated'){
+    // apply sobelx[0]
+    currentImage.convolute([[[0, 0.25, 0], [0, 0.5, 0], [0, 0.25, 0]]], function(image, pos, sum){
+      image[pos] = sum[0];
+    });
+    // apply sobelx[1]
+    currentImage.convolute([[[0, 0, 0], [0.5, 0, -0.5], [0, 0, 0]]], function(image, pos, sum){
+      image[pos] = sum[0];
+    });
+
+    currentImage.flushGrayScaleToCanvas(addition);
+  }else if(currentFilter === 'sobelYSeparated'){
+    // apply sobelx[0]
+    currentImage.convolute([[[0, 0.5, 0], [0, 0, 0], [0, -0.5, 0]]], function(image, pos, sum){
+      image[pos] = sum[0];
+    });
+    // apply sobelx[1]
+    currentImage.convolute([[[0, 0, 0], [0.25, 0.5, 0.25], [0, 0, 0]]], function(image, pos, sum){
+      image[pos] = sum[0];
+    });
+
+    currentImage.flushGrayScaleToCanvas(addition);
+  }else if(currentFilter === 'sobelAbsoluteGradient'){
     
     // apply sobelx and sobely on the image
     currentImage.convolute([filters.sobelX, filters.sobelY], function(image, pos, sum){
@@ -79,23 +104,26 @@ var testing = function(){
     });
     currentImage.flushGrayScaleToCanvas(addition);
   }
+
+  var end = new Date().getTime();
+  time.innerText = (end - start) + 'ms';
 };
 
 // change the current image when a new file is selected from the filepicker
 document.getElementById('file-select').addEventListener('change', function(){
   currentImage = new ManipulatableImage(_sourceImage, _ouputCanvas);
   currentImage.load('images/' + this.value, function(){
-    testing();
+    execute();
   });
 });
 
 document.getElementById('action-select').addEventListener('change', function(){
   currentFilter = this.value;
-  testing();
+  execute();
 });
 
 window.onload = function(){
   currentImage.load('images/train.png', function(){
-    testing();
+    execute();
   });
 };
