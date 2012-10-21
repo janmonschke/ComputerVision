@@ -3,11 +3,13 @@ var _sourceImage = document.getElementById('source-image');
 var _ouputCanvas = document.getElementById('output-canvas');
 var currentImage = new ManipulatableImage(_sourceImage, _ouputCanvas);
 
+// all filter are already mirrored and normalised
 var filters = {
   xGradient: [[0, 0, 0], [0.5, 0 , -0.5], [0, 0, 0]],
   yGradient: [[0, 0.5, 0], [0, 0, 0], [0, -0.5, 0]],
   laplaceSharpening: [[0, 1, 0], [1, -4, 1], [0, 1, 0]],
-  sobelX: [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]
+  sobelX: [[0.125, 0, -0.125], [0.25, 0, -0.25], [0.125, 0, -0.125]],
+  sobelY: [[0.125, 0.25, 0.125], [0, 0, 0], [-0.125, -0.25, -0.125]]
 };
 
 var testing = function(){
