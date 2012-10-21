@@ -3,7 +3,7 @@ var _sourceImage = document.getElementById('source-image');
 var _ouputCanvas = document.getElementById('output-canvas');
 var currentImage = new ManipulatableImage(_sourceImage, _ouputCanvas);
 
-// all filter are already mirrored and normalised
+// all filters are already mirrored and normalised
 var filters = {
   xGradient: [[0, 0, 0], [0.5, 0 , -0.5], [0, 0, 0]],
   yGradient: [[0, 0.5, 0], [0, 0, 0], [0, -0.5, 0]],
@@ -17,7 +17,11 @@ var testing = function(){
   var start = new Date().getTime();
   currentImage.grayScale();
   var pointA = new Date().getTime();
-  currentImage.convolute(filters[currentFilter]);
+  if(currentFilter === 'sobelAbsoluteGradient'){
+
+  }else{
+    currentImage.convolute(filters[currentFilter]);
+  }
   var pointB = new Date().getTime();
   currentImage.flushToCanvas();
   var end = new Date().getTime();
@@ -42,7 +46,3 @@ window.onload = function(){
     testing();
   });
 };
-
-document.getElementById('test').addEventListener('click', function(){
-  testing();
-});

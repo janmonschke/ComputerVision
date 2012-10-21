@@ -6,7 +6,7 @@ var ManipulatableImage = function (sourceImage, outputCanvas){
   this.manipulatedImageData = [];
 };
 
-ManipulatableImage.prototype.convolute = function(convolution){
+ManipulatableImage.prototype.convolute = function(convolution, eachCallback){
   var length = this.manipulatedImageData.length;
   var width = this.sourceImage.width;
   var height = this.sourceImage.height;
@@ -24,6 +24,7 @@ ManipulatableImage.prototype.convolute = function(convolution){
       }
     }
     newImage[i] = sum;
+    if(eachCallback){ eachCallback(sum); }
   }
   this.manipulatedImageData = newImage;
   return this;
@@ -31,8 +32,7 @@ ManipulatableImage.prototype.convolute = function(convolution){
 
 // save access to the streamlined imagedata
 ManipulatableImage.prototype.getStreamLineValue = function(x, y, width, height){
-  if(x < 0){ x = 0; } else if(x > width - 1){ x = width - 1; }
-  if(y < 0){ y = 0; } else if(y > height - 1){ x = height - 1; }
+  if(x < 0 || x > width - 1 || y < 0 || y > height - 1){ return 255; }
   return this.manipulatedImageData[y * width + x];
 };
 
