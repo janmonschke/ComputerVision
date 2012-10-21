@@ -57,7 +57,8 @@ ManipulatableImage.prototype.convolute = function(filters, callback){
 
 // save access to the streamlined imagedata
 ManipulatableImage.prototype.getStreamLineValue = function(x, y, width, height){
-  if(x < 0 || x > width - 1 || y < 0 || y > height - 1){ return 255; }
+  if(x < 0){ x = 0; } else if(x > width - 1){ x = width - 1; }
+  if(y < 0){ y = 0; } else if(y > height - 1){ y = height - 1; }
   return this.manipulatedImageData[y * width + x];
 };
 
@@ -105,7 +106,7 @@ ManipulatableImage.prototype.drawImageToCanvas = function() {
 };
 
 // Flushes the manipulated data to the canvas
-ManipulatableImage.prototype.flushToCanvas = function(addition){
+ManipulatableImage.prototype.flushGrayScaleToCanvas = function(addition){
   if(!addition){ addition = 0; }
   var flush = this.outputContext.createImageData(this.outputCanvas.width, this.outputCanvas.height);
   var current;
@@ -115,6 +116,22 @@ ManipulatableImage.prototype.flushToCanvas = function(addition){
     flush.data[4*i] = current;
     flush.data[4*i+1] = current;
     flush.data[4*i+2] = current;
+    flush.data[4*i+3] = 255;
+  }
+  this.outputContext.putImageData(flush, 0, 0);
+  return this;
+};
+
+ManipulatableImage.prototype.flushHSBtoRGBToCanvas = function(addition){
+  if(!addition){ addition = 0; }
+  var flush = this.outputContext.createImageData(this.outputCanvas.width, this.outputCanvas.height);
+  var current, rgbFromCurrentHsb;
+  for(var i = 0; i < this.manipulatedImageData.length; i++){
+    current = this.manipulatedImageData[i];
+    rgbFromCurrentHsb = utilities.rgbFromHsb([current, 100, 100]);
+    flush.data[4*i] = rgbFromCurrentHsb[0];
+    flush.data[4*i+1] = rgbFromCurrentHsb[1];
+    flush.data[4*i+2] = rgbFromCurrentHsb[2];
     flush.data[4*i+3] = 255;
   }
   this.outputContext.putImageData(flush, 0, 0);
