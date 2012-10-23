@@ -106,7 +106,7 @@ var execute = function(){
   }
 
   var end = new Date().getTime();
-  time.innerText = (end - start) + 'ms';
+  time.textContent = (end - start) + 'ms';
 };
 
 // change the current image when a new file is selected from the filepicker
