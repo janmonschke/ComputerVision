@@ -33,11 +33,11 @@ var execute = function(){
 
     currentImage.flushGrayScaleToCanvas(addition);
   }else if(currentFilter === 'sobelYSeparated'){
-    // apply sobelx[0]
+    // apply sobely[0]
     currentImage.convolute([[[0, 0.5, 0], [0, 0, 0], [0, -0.5, 0]]], function(image, pos, sum){
       image[pos] = sum[0];
     });
-    // apply sobelx[1]
+    // apply sobely[1]
     currentImage.convolute([[[0, 0, 0], [0.25, 0.5, 0.25], [0, 0, 0]]], function(image, pos, sum){
       image[pos] = sum[0];
     });
