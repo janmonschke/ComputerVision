@@ -72,19 +72,22 @@ var execute = function(){
   }else if(currentFilter === 'sobelGradientDirectionColor'){
     
     var angle = 0;
+    var angles = new Uint16Array(currentImage.manipulatedImageData.length);
     // apply sobelx and sobely on the image
     currentImage.convolute([filters.sobelX, filters.sobelY], function(image, pos, sum){
       // calculate the angle
       angle = (Math.atan2(sum[1], sum[0]));
       // save the angle in degree
-      image[pos] = (angle + Math.PI) * 360 / (2 * Math.PI);
-    });
-    addition = 0;
-    currentImage.flushHSBtoRGBToCanvas(addition);
+      angles[pos] = (angle + Math.PI) * 360 / (2 * Math.PI);
+    }, true);
+
+    currentImage.flushHSBtoRGBToCanvas(angles);
 
   }else if(currentFilter === 'combined'){
     var absl = 0;
     var angle = 0;
+    var angles = new Uint16Array(currentImage.manipulatedImageData.length);
+    var absolutes = new Uint16Array(currentImage.manipulatedImageData.length);
     // apply sobelx and sobely on the image
     currentImage.convolute([filters.sobelX, filters.sobelY], function(image, pos, sum){
       // calculate the angle
@@ -93,10 +96,10 @@ var execute = function(){
       angle = (angle + Math.PI) * 360 / (2 * Math.PI);
       // save the absolute
       absl = Math.sqrt(sum[0] * sum[0] + sum[1] * sum[1]);
-      image[pos] = { angle: angle, absolute: absl };
-    });
-    addition = 0;
-    currentImage.combinedFlush(addition);
+      angles[pos] = angle;
+      absolutes[pos] = absl;
+    }, true);
+    currentImage.combinedFlush(angles, absolutes);
 
   }else{
     currentImage.convolute([filters[currentFilter]], function(image, pos, sum){
